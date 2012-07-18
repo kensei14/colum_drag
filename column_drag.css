@@ -1,0 +1,41 @@
+* {
+	margin : 0px;
+	padding : 0px;
+}
+
+body {
+	height : 800px;
+	width : 1200px;
+	margin : 20px;
+	padding : 50px 30px 50px 30px;
+	border : solid 1px black;
+}
+
+.column {
+	display : block;
+	background-color : #EEE;
+	float : left;
+	height : 95%;
+	width : 200px;
+	border : solid 1px yellow;
+	margin-right : 20px;
+}
+
+.blank {
+	margin-left : 0px;
+	margin-right : 0px;
+	width : 40px;
+	border : solid 1px red;
+}
+
+.dragzone {
+	height : 5%;
+	text-align : center;
+	border : solid 1px black;
+}
+
+.content {
+	height : 95%;
+	text-align : center;
+	border : solid 1px blue;
+}
