@@ -7,6 +7,7 @@ document.addEventListener("DOMContentLoaded", function() {
 	}
 }, false);
 
+
 function createColumn(i) {
 	var new_column = document.createElement("div");
 	//var new_blank = document.createElement("div");
