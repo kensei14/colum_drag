@@ -5,26 +5,26 @@
 
 body {
 	height : 800px;
-	width : 1200px;
+	width : 1300px;
 	margin : 20px;
 	padding : 50px 30px 50px 30px;
 	border : solid 1px black;
 }
 
-.column {
+.column-size {
 	display : block;
-	background-color : #EEE;
 	float : left;
 	height : 95%;
 	width : 200px;
-	border : solid 1px yellow;
+}
+
+.column-decoration {
+	background-color : #EEE;
+	border : solid 1px yellow;	
 }
 
 .blank {
-	margin-left : 0px;
-	margin-right : 0px;
-	width : 40px;
-	border-style : none;
+	width : 30px;
 	background-color : white;
 	opacity : 0%;
 }
