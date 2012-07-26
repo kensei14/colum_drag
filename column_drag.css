@@ -11,11 +11,17 @@ body {
 	border : solid 1px black;
 }
 
+#column_list {
+	height : 800px;
+	width : 1300px;
+}
+
 .column-size {
 	display : block;
 	float : left;
 	height : 95%;
 	width : 200px;
+	border : dotted 1px black;
 }
 
 .column-decoration {
@@ -26,7 +32,7 @@ body {
 .blank {
 	width : 30px;
 	background-color : white;
-	opacity : 0%;
+	/*opacity : 0%;*/
 }
 
 .dragzone {
