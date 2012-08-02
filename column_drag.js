@@ -109,8 +109,13 @@ function createBlank() {
 	//空白要素の幅を変更する。(Blankクラスを挿入する)
 	new_blank.addEventListener("dragenter", function(event) {
 		//列要素の直前・直後の空白要素でなければ
-		if((this.nextSibling.id != event.dataTransfer.getData("Text")) && (this.previousSibling.id != event.dataTransfer.getData("Text"))) {
-			this.classList.remove("blank");	
+		if(this.previousSibling.id == event.dataTransfer.getData("Text")) {
+			console.log("上の方  : " + this.previousSibling.id + "   " + event.dataTransfer.getData("Text"));
+		} else if ((this.nextSibling != null) && (this.nextSibling.id == event.dataTransfer.getData("Text"))) {
+			console.log("中の方  : " + this.previousSibling.id + "   " + event.dataTransfer.getData("Text"));
+		} else {
+			this.classList.remove("blank");
+			console.log("下の方  : " + this.previousSibling.id + "   " + event.dataTransfer.getData("Text"));
 		}
 	}, false);
 		
@@ -125,10 +130,16 @@ function createBlank() {
 	
 	new_blank.addEventListener("drop", function(event) {
 		event.preventDefault();
-		
-		this.classList.add("blank");
-		column_list.insert(this.previousSibling.id, event.dataTransfer.getData("Text"));
-		column_list.show();	
+
+		if(this.previousSibling.id == event.dataTransfer.getData("Text")) {
+		} else if ((this.nextSibling != null) && (this.nextSibling.id == event.dataTransfer.getData("Text"))) {
+		} else {
+			this.classList.remove("blank");
+			alert("start");
+			
+			column_list.insert(this.previousSibling.id, event.dataTransfer.getData("Text"));
+			column_list.show();	
+		}
 	}, false);
 
 	return new_blank;
