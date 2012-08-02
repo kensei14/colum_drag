@@ -1,110 +1,107 @@
 /**
  * @author 鎗水謙星
  */
-
-Array.prototype = Array.prototype || {};
-
-Array.prototype.createColumn = function(i) {
-//function createColumn(i) {
-	var new_column = document.createElement("div");
-	var new_dragzone = document.createElement("div");
-	var new_content = document.createElement("div");
-	
-	new_column.classList.add("column-size");
-	new_column.classList.add("column-decoration");
-	new_column.setAttribute("id", "column" + i);
-	
-	new_dragzone.classList.add("dragzone");
-	new_dragzone.setAttribute("draggable", "true");
-	new_dragzone.textContent = "title" + i;
-		
-	new_content.className = "content";
-	new_content.textContent = "content" + i;
-
-	new_dragzone.addEventListener("dragstart", function(event) {
-		//event.dataTransfer.addElement(this.parentNode);
-		event.dataTransfer.setData("Text", this.parentNode.getAttribute('id'));		//移動対象列要素のidをイベントオブジェクトに格納する。
-		return true;
-	}, false);
-	
-	new_column.appendChild(new_dragzone);
-	new_column.appendChild(new_content);
-	
-	return new_column;
-}
-
-//moving_idをもつ列をtarget_idの前に、挿入します。
-Array.prototype.insert = function(target_id, moving_id) {
-//column_list.insert = function(target_id, moving_id) {
-	var target_num, moving_num;
-	var moving_div;
-	
-	console.log("確認:    " + target_id +  "  " + moving_id);
-	//console.log("for文前: target-" + target_num +  "  moving-" + moving_num);
-	
-	//動かす要素を見つけ元の配列から削除する。
-	for(var i=0; i < column_list.length; i++) {
-		if(column_list[i].id == moving_id) {
-			moving_num = i;
-			var col = column_list[moving_num];
-			column_list.splice(moving_num, 1);
-			break;
-		}
-	}
-	//移動先の要素を見つけ、それ以降の要素を切り取る。
-	for(var i=0; i < column_list.length; i++) {
-		if(column_list[i].id == target_id) {
-			target_num = i;
-			var back = 	column_list.slice(target_num+1, column_list.length);
-			break;
-		}
-	}
-
-	//console.log("for文後: target-" + column_list[target_num].id +  "  moving-" + column_list[moving_num].id);
-
-	column_list.consoleOut();
-	column_list.splice(target_num+1);
-	column_list.consoleOut();
-	column_list = column_list.concat(col);
-	column_list.consoleOut();
-	column_list = column_list.concat(back);
-	column_list.consoleOut();
-}
-
-Array.prototype.show = function() {
-//column_list.prototype.show = function() {
-	var c_list = document.getElementById("column_list");
-	c_list.innerHTML = "";
-		
-	for(var i=0; i < column_list.length; i++) {
-		c_list.appendChild(column_list[i]);
-		c_list.appendChild(createBlank());
-	}
-}
-
-Array.prototype.consoleOut = function() {
-//column_list.consoleOut = function() {
-	var out = "Console Oout (" + column_list.length + ")   : ";
-	for(var i=0; i < column_list.length; i++) {
-		out += column_list[i].id + "  ";
-	};
-	console.log(out);
-}
-
-var column_list = new Array(5);
+var Columns = new MyColumns();
 
 document.addEventListener("DOMContentLoaded", function() {
-	for(var i=0; i<5; i++) {
-		column_list[i] = column_list.createColumn(i);
-	}
-	column_list.show();
+	Columns.generate();
+	Columns.show();
 }, false);
+
+function MyColumns() {
+	this.column_list = new Array(5);
+	
+	this.generate = function() {
+		for(var i=0; i<5; i++) {
+			this.column_list[i] = this.createColumn(i);
+		}
+	}
+
+	this.createColumn = function(i) {
+		var new_column = document.createElement("div");
+		var new_dragzone = document.createElement("div");
+		var new_content = document.createElement("div");
+		
+		new_column.classList.add("column-size");
+		new_column.classList.add("column-decoration");
+		new_column.setAttribute("id", "column" + i);
+		
+		new_dragzone.classList.add("dragzone");
+		new_dragzone.setAttribute("draggable", "true");
+		new_dragzone.textContent = "title" + i;
+			
+		new_content.className = "content";
+		new_content.textContent = "content" + i;
+	
+		new_dragzone.addEventListener("dragstart", function(event) {
+			//event.dataTransfer.addElement(this.parentNode);
+			event.dataTransfer.setData("Text", this.parentNode.getAttribute('id'));		//移動対象列要素のidをイベントオブジェクトに格納する。
+			return true;
+		}, false);
+		
+		new_column.appendChild(new_dragzone);
+		new_column.appendChild(new_content);
+		
+		return new_column;
+	}
+
+	//moving_idをもつ列をtarget_idの前に、挿入します。
+	this.insert = function(target_id, moving_id) {
+		var target_num, moving_num;
+		var moving_div;
+				
+		//動かす要素を見つけ元の配列から削除する。
+		for(var i=0; i < this.column_list.length; i++) {
+			if(this.column_list[i].id == moving_id) {
+				moving_num = i;
+				var col = this.column_list[moving_num];
+				this.column_list.splice(moving_num, 1);
+				break;
+			}
+		}
+		//移動先の要素を見つけ、それ以降の要素を切り取る。
+		for(var i=0; i < this.column_list.length; i++) {
+			if(this.column_list[i].id == target_id) {
+				target_num = i;
+				var back = 	this.column_list.slice(target_num+1, this.column_list.length);
+				break;
+			}
+		}
+	
+		this.consoleOut();
+		this.column_list.splice(target_num+1);
+		this.consoleOut();
+		this.column_list = this.column_list.concat(col);
+		this.consoleOut();
+		this.column_list = this.column_list.concat(back);
+		this.consoleOut();
+	}
+	
+	this.show = function() {
+		var c_list = document.getElementById("column_list");
+		c_list.innerHTML = "";
+			
+		for(var i=0; i < this.column_list.length; i++) {
+			c_list.appendChild(this.column_list[i]);
+			c_list.appendChild(createBlank());
+		}
+	}
+
+	this.consoleOut = function() {
+		var out = "Console Oout (" + this.column_list.length + ")   : ";
+		for(var i=0; i < this.column_list.length; i++) {
+			out += this.column_list[i].id + "  ";
+		};
+		console.log(out);
+	}
+}
 
 function createBlank() {
 	var new_blank = document.createElement("div");
 
 	new_blank.classList.add("column-size");
 	new_blank.classList.add("blank");
+	new_blank.setAttribute("dorpzone", "move");
 	
 	//空白要素の幅を変更する。(Blankクラスを挿入する)
 	new_blank.addEventListener("dragenter", function(event) {
@@ -137,8 +134,8 @@ function createBlank() {
 			this.classList.remove("blank");
 			alert("start");
 			
-			column_list.insert(this.previousSibling.id, event.dataTransfer.getData("Text"));
-			column_list.show();	
+			Columns.insert(this.previousSibling.id, event.dataTransfer.getData("Text"));
+			Columns.show();	
 		}
 	}, false);
 
