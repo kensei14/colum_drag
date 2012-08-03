@@ -1,7 +1,8 @@
 /**
  * @author 鎗水謙星
  */
-var Columns = new MyColumns();
+var length = 5;
+var Columns = new MyColumns(length);
 
 document.addEventListener("DOMContentLoaded", function() {
 	Columns.generate();
@@ -9,11 +10,12 @@ document.addEventListener("DOMContentLoaded", function() {
 }, false);
 
 //Columnsをカプセル化する
-function MyColumns() {
-	this.column_list = new Array(5);
+function MyColumns(length) {
+	this.length = length;
+	this.column_list = new Array(this.length);
 	
 	this.generate = function() {
-		for(var i=0; i<5; i++) {
+		for(var i=0; i < this.length; i++) {
 			this.column_list[i] = this.createColumn(i);
 		}
 	}
@@ -35,7 +37,14 @@ function MyColumns() {
 		new_content.textContent = "content" + i;
 	
 		new_dragzone.addEventListener("dragstart", function(event) {
-			//event.dataTransfer.addElement(this.parentNode);
+			//透過中ドラッグ対象カラムの表示
+            if (event.dataTransfer.addElement) {	//FireFox
+                event.dataTransfer.addElement (this.parentNode);
+            }
+            else if (event.dataTransfer.setDragImage) {		//Chrome etc
+                    event.dataTransfer.setDragImage (this.parentNode, 0, 0);
+            }
+            			
 			event.dataTransfer.setData("Text", this.parentNode.getAttribute('id'));		//移動対象列要素のidをイベントオブジェクトに格納する。
 			return true;
 		}, false);
@@ -46,7 +55,7 @@ function MyColumns() {
 		return new_column;
 	}
 	
-	//moving_id(文字列型) をもつ列をtarget(HTMLDivObject) の前に、挿入します。
+	//moving_id(文字列型) をもつ列をtarget(HTMLDivObject型) の前に、挿入します。
 	this.insert = function(target, moving_id) {
 		var target_id;
 		var target_num, moving_num;
@@ -68,7 +77,7 @@ function MyColumns() {
 			}
 		}
 		
-		//移動先の要素を見つけ、それ以降の要素を切り取る。
+		//移動先の要素番号を見つる。
 		if (target_id == null) {
 			target_num = -1;
 		} else {
@@ -79,7 +88,7 @@ function MyColumns() {
 				}
 			}			
 		}
-		var light = this.column_list.slice(target_num+1, this.column_list.length);
+		var light = this.column_list.slice(target_num+1, this.column_list.length);		//移動先の要素を以降の要素列を切り取る
 	
 		this.consoleOut();
 		this.column_list.splice(target_num+1);
@@ -117,21 +126,18 @@ function createBlank() {
 	new_blank.classList.add("blank");
 	new_blank.setAttribute("dorpzone", "move");
 	
-	//空白要素の幅を変更する。(Blankクラスを挿入する)
+	//空白要素に罫線をつける
 	new_blank.addEventListener("dragenter", function(event) {
+		var moving_id = event.dataTransfer.getData("Text");
 
-		//最初と最後の空白の場合は何もしない 横幅が広がらないため。
-		if ((this.previousSibling == null) || (this.nextSibling == null)) { this.classList.add("drag_line"); }
-		//空白の前後の要素が移動していた場合場合も何もしない
-		else if ((this.previousSibling.id == event.dataTransfer.getData("Text")) || (this.nextSibling.id == event.dataTransfer.getData("Text"))) { }
-		else { 
-			this.classList.add("drag_line");
-		}
+		if ((this.previousSibling == null) && (this.nextSibling.id != moving_id)) { this.classList.add("drag_line"); }		//先頭にドラッグするときの処理
+		else if ((this.nextSibling == null) && (this.previousSibling.id != moving_id)) { this.classList.add("drag_line"); }		//最後尾にドラッグするときの処理
+		else if ((this.previousSibling.id == moving_id) || (this.nextSibling.id == moving_id)) { }		//空白の前後の要素が移動していた場合場合も何もしない
+		else { this.classList.add("drag_line"); }
 	}, false);
 		
-	//空白要素を元に戻す(Blankクラスを取り除く)
+	//空白要素を元に戻す(罫線を消す)
 	new_blank.addEventListener("dragleave", function(event) {
-		//this.classList.add("blank");
 		this.classList.remove("drag_line");
 	}, false);
 	
@@ -141,18 +147,17 @@ function createBlank() {
 	
 	new_blank.addEventListener("drop", function(event) {
 		event.preventDefault();
+		var moving_id = event.dataTransfer.getData("Text");
 
 		if (this.previousSibling == null) { 
-			if (this.nextSibling.id != event.dataTransfer.getData("Text")) {
-				Columns.insert( null , event.dataTransfer.getData("Text"));
+			if (this.nextSibling.id != moving_id) {
+				Columns.insert( null , moving_id);
 				Columns.show();	
 			} 
-		} else if(this.previousSibling.id == event.dataTransfer.getData("Text")) {
-		} else if ((this.nextSibling != null) && (this.nextSibling.id == event.dataTransfer.getData("Text"))) {
+		} else if(this.previousSibling.id == moving_id) {
+		} else if ((this.nextSibling != null) && (this.nextSibling.id == moving_id)) {
 		} else {
-			this.classList.remove("drag_line");
-			
-			Columns.insert(this.previousSibling, event.dataTransfer.getData("Text"));
+			Columns.insert(this.previousSibling, moving_id);
 			Columns.show();	
 		}
 
