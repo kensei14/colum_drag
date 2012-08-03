@@ -8,6 +8,7 @@ document.addEventListener("DOMContentLoaded", function() {
 	Columns.show();
 }, false);
 
+//Columnsをカプセル化する
 function MyColumns() {
 	this.column_list = new Array(5);
 	
@@ -44,8 +45,8 @@ function MyColumns() {
 		
 		return new_column;
 	}
-
-	//moving_idをもつ列をtarget_idの前に、挿入します。
+	
+	//moving_id(文字列型) をもつ列をtarget(HTMLDivObject) の前に、挿入します。
 	this.insert = function(target, moving_id) {
 		var target_id;
 		var target_num, moving_num;
@@ -120,11 +121,10 @@ function createBlank() {
 	new_blank.addEventListener("dragenter", function(event) {
 
 		//最初と最後の空白の場合は何もしない 横幅が広がらないため。
-		if ((this.previousSibling == null) || (this.nextSibling == null)) {  }
+		if ((this.previousSibling == null) || (this.nextSibling == null)) { this.classList.add("drag_line"); }
 		//空白の前後の要素が移動していた場合場合も何もしない
 		else if ((this.previousSibling.id == event.dataTransfer.getData("Text")) || (this.nextSibling.id == event.dataTransfer.getData("Text"))) { }
 		else { 
-			//this.classList.remove("blank");
 			this.classList.add("drag_line");
 		}
 	}, false);
@@ -150,7 +150,6 @@ function createBlank() {
 		} else if(this.previousSibling.id == event.dataTransfer.getData("Text")) {
 		} else if ((this.nextSibling != null) && (this.nextSibling.id == event.dataTransfer.getData("Text"))) {
 		} else {
-			//this.classList.remove("blank");
 			this.classList.remove("drag_line");
 			
 			Columns.insert(this.previousSibling, event.dataTransfer.getData("Text"));
