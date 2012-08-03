@@ -1,8 +1,8 @@
 /**
  * @author 鎗水謙星
  */
-var length = 5;
-var Columns = new MyColumns(length);
+var LENGTH = 5;
+var Columns = new MyColumns(LENGTH);
 
 document.addEventListener("DOMContentLoaded", function() {
 	Columns.generate();
@@ -37,12 +37,16 @@ function MyColumns(length) {
 		new_content.textContent = "content" + i;
 	
 		new_dragzone.addEventListener("dragstart", function(event) {
+			var moving_column = this.parentNode;
+			
 			//透過中ドラッグ対象カラムの表示
             if (event.dataTransfer.addElement) {	//FireFox
-                event.dataTransfer.addElement (this.parentNode);
+            	//moving_column.style.visibility = "hidden";
+                event.dataTransfer.addElement(moving_column);
             }
             else if (event.dataTransfer.setDragImage) {		//Chrome etc
-                    event.dataTransfer.setDragImage (this.parentNode, 0, 0);
+            	    //moving_column.style.visibility = "hidden";
+                    event.dataTransfer.setDragImage (moving_column, 0, 0);
             }
             			
 			event.dataTransfer.setData("Text", this.parentNode.getAttribute('id'));		//移動対象列要素のidをイベントオブジェクトに格納する。
